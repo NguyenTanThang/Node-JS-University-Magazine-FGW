@@ -109,10 +109,11 @@ const getContributionByFacultyID = async (req, res) => {
 const addContribution = async (req, res) => {
     try {
         const {title, docFileURL, imageFileURL, contributor, faculty, term} = req.body;
+        console.log(req.body);
 
-        const existedTerm = await Term.findOne({term});
-        const existedFaculty = await Faculty.findOne({faculty});
-        const existedUser = await User.findOne({contributor});
+        const existedTerm = await Term.findById(term);
+        const existedFaculty = await Faculty.findById(faculty);
+        const existedUser = await User.findById(contributor);
 
         if (!existedTerm || !existedFaculty || !existedUser) {
             return res.json({
@@ -132,7 +133,7 @@ const addContribution = async (req, res) => {
         return res.json({
             status: 200,
             success: true,
-            data: term,
+            data: contribution,
             message: `Successfully created a ${routeName}`
         })
     } catch (error) {
@@ -150,7 +151,6 @@ const editContribution = async (req, res) => {
     try {
         const {contributionID} = req.params;
         const updatedContribution = req.body;
-        const {contributor, faculty, term} = updatedContribution;
 
         const existedContribution = await Contribution.findById(contributionID);
 
@@ -163,20 +163,13 @@ const editContribution = async (req, res) => {
             })
         }
 
-        const existedTerm = await Term.findOne({term});
-        const existedFaculty = await Faculty.findOne({faculty});
-        const existedUser = await User.findOne({contributor});
+        let contribution = await Contribution.findByIdAndUpdate(contributionID, {...updatedContribution, last_modified_date: Date.now()});
 
-        if (!existedTerm || !existedFaculty || !existedUser) {
-            return res.json({
-                status: 200,
-                success: false,
-                data: null,
-                message: `Invalid crucial data such as term, faculty or contributor`
-            })
-        }
-
-        const contribution = await Contribution.findByIdAndUpdate(contributionID, {...updatedContribution, last_modified_date: Date.now()});
+        contribution = await Contribution.findById(contributionID)
+        .populate('contributor')
+        .populate('faculty')
+        .populate('term')
+        .exec();
 
         return res.json({
             status: 200,

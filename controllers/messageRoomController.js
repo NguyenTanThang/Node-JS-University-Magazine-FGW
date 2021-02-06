@@ -25,6 +25,40 @@ const getAllMessageRooms = async (req, res) => {
     }
 }
 
+const getAllMessageRoomsByUserID = async (req, res) => {
+    try {
+        const {userID} = req.params;
+        let messageRooms = await MessageRoom.find()
+        .populate('receiver')
+        .populate('sender')
+        .exec();
+        let actualMessageRooms = [];
+
+        for (let i = 0; i < messageRooms.length; i++) {
+            const messageRoom = messageRooms[i];
+            console.log(messageRoom);
+            if (messageRoom.sender._id == userID || messageRoom.receiver._id == userID) {
+                actualMessageRooms.push(messageRoom);
+            }
+        }
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: actualMessageRooms,
+            count: actualMessageRooms.length
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
 const getMessageRoomByID = async (req, res) => {
     try {
         const {messageRoomID} = req.params;
@@ -99,8 +133,8 @@ const addMessageRoom = async (req, res) => {
             last_modified_date: Date.now()
         }).save();
         messageRoom = await MessageRoom.findById(messageRoom._id)
-        .populate('receiver')
         .populate('sender')
+        .populate('receiver')
         .exec();
 
         return res.json({
@@ -124,5 +158,6 @@ module.exports = {
     getAllMessageRooms,
     getMessageRoomByID,
     getMessageRoomByUserID,
-    addMessageRoom
+    addMessageRoom,
+    getAllMessageRoomsByUserID
 }

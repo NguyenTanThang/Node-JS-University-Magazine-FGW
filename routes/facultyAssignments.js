@@ -12,7 +12,7 @@ const {
 
 router.get('/', getAllFacultyAssigments);
 
-router.get('/facultyAssigmentID/:facultyAssigmentID', getFacultyAssigmentByID);
+router.get('/facultyAssignmentID/:facultyAssignmentID', getFacultyAssigmentByID);
 
 router.get('/userID/:userID', getFacultyAssigmentByUserID);
 
@@ -20,8 +20,8 @@ router.get('/facultyID/:facultyID', getFacultyAssigmentByFacultyID);
 
 router.post('/add', addFacultyAssigment);
 
-router.put('/edit/:facultyAssigmentID', editFacultyAssigment);
+router.put('/edit/:facultyAssignmentID', editFacultyAssigment);
 
-router.delete('/delete/:facultyAssigmentID', deleteFacultyAssigment);
+router.delete('/delete/:facultyAssignmentID', deleteFacultyAssigment);
 
 module.exports = router;

@@ -103,13 +103,14 @@ const editFaculty = async (req, res) => {
             })
         }
 
-        const faculty = await Faculty.findByIdAndUpdate(facultyID, {...updatedFaculty, last_modified_date: Date.now()});
+        let faculty = await Faculty.findByIdAndUpdate(facultyID, {...updatedFaculty, last_modified_date: Date.now()});
+        faculty = await Faculty.findById(facultyID);
 
         return res.json({
             status: 200,
             success: true,
             data: faculty,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully updated a ${routeName}`
         })
     } catch (error) {
         console.log(error);
@@ -145,7 +146,7 @@ const deleteFaculty = async (req, res) => {
             status: 200,
             success: true,
             data: faculty,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully delete a ${routeName}`
         })
     } catch (error) {
         console.log(error);

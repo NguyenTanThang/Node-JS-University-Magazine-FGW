@@ -29,8 +29,8 @@ const getAllFacultyAssigments = async (req, res) => {
 
 const getFacultyAssigmentByID = async (req, res) => {
     try {
-        const {facultyAssigmentID} = req.params;
-        const facultyAssignment = await FacultyAssignment.findById(facultyAssigmentID)
+        const {facultyAssignmentID} = req.params;
+        const facultyAssignment = await FacultyAssignment.findById(facultyAssignmentID)
         .populate('user')
         .populate('faculty')
         .exec();
@@ -140,7 +140,7 @@ const addFacultyAssigment = async (req, res) => {
             status: 200,
             success: true,
             data: facultyAssignment,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully created a ${routeName}`
         })
     } catch (error) {
         console.log(error);
@@ -159,6 +159,7 @@ const editFacultyAssigment = async (req, res) => {
         const {faculty} = req.body;
         
         const existedFacultyAssignment = await FacultyAssignment.findById(facultyAssignmentID);
+        console.log(existedFacultyAssignment);
 
         if (!existedFacultyAssignment) {
             return res.json({
@@ -176,7 +177,7 @@ const editFacultyAssigment = async (req, res) => {
                 status: 200,
                 success: false,
                 data: null,
-                message: `Invalid user or faculty`
+                message: `Invalid faculty`
             })
         }
 
@@ -191,7 +192,7 @@ const editFacultyAssigment = async (req, res) => {
             status: 200,
             success: true,
             data: facultyAssignment,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully updated a ${routeName}`
         })
     } catch (error) {
         console.log(error);
@@ -225,7 +226,7 @@ const deleteFacultyAssigment = async (req, res) => {
             status: 200,
             success: true,
             data: facultyAssignment,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully deleted a ${routeName}`
         })
     } catch (error) {
         console.log(error);

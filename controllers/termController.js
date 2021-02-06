@@ -100,13 +100,14 @@ const editTerm = async (req, res) => {
             })
         }
 
-        const term = await Term.findByIdAndUpdate(termID, {...updatedTerm, last_modified_date: Date.now()});
+        let term = await Term.findByIdAndUpdate(termID, {...updatedTerm, last_modified_date: Date.now()});
+        term = await Term.findById(termID);
 
         return res.json({
             status: 200,
             success: true,
             data: term,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully updated a ${routeName}`
         })
     } catch (error) {
         console.log(error);
@@ -141,7 +142,7 @@ const deleteTerm = async (req, res) => {
             status: 200,
             success: true,
             data: term,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully deleted a ${routeName}`
         })
     } catch (error) {
         console.log(error);

@@ -111,13 +111,16 @@ const editUser = async (req, res) => {
             })
         }
 
-        const user = await User.findByIdAndUpdate(userID, {...updatedUser, last_modified_date: Date.now()});
+        let user = await User.findByIdAndUpdate(userID, {...updatedUser, last_modified_date: Date.now()});
+        user = await User.findById(userID)
+        .populate('role')
+        .exec();
 
         return res.json({
             status: 200,
             success: true,
             data: user,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully updated an ${routeName}`
         })
     } catch (error) {
         console.log(error);
@@ -154,7 +157,7 @@ const deleteUser = async (req, res) => {
             status: 200,
             success: true,
             data: user,
-            message: `Successfully created an ${routeName}`
+            message: `Successfully deleted an ${routeName}`
         })
     } catch (error) {
         console.log(error);
