@@ -8,17 +8,22 @@ const {
   deleteUser,
   login
 } = require("../controllers/userController");
+const {
+  authenticateToken,
+  allowAdmin
+} = require("../config/auth");
 
-router.get('/', getAllUsers);
+router.get('/', authenticateToken, allowAdmin, getAllUsers);
+//router.get('/', getAllUsers);
 
-router.get('/:userID', getUserByID);
+router.get('/:userID', authenticateToken, allowAdmin, getUserByID)
 
-router.post('/add', addUser);
+router.post('/add', authenticateToken, allowAdmin, addUser);
 
 router.post('/login', login);
 
-router.put('/edit/:userID', editUser);
+router.put('/edit/:userID', authenticateToken, allowAdmin, editUser);
 
-router.delete('/delete/:userID', deleteUser);
+router.delete('/delete/:userID', authenticateToken, allowAdmin, deleteUser);
 
 module.exports = router;

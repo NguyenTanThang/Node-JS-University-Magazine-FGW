@@ -14,6 +14,7 @@ mongoose.connect(config.MONGODB_URI, {
             console.log("we are connected")
         }).catch(err => console.log(err));
 
+        /*
 const users = [
     new User({
         email: "student1@student.com",
@@ -52,6 +53,26 @@ const users = [
         password: "123456",
         username: "Guest 1",
         role: "600fbbf2ad2e6e119cd5edfc",
+        created_date: Date.now(),
+        last_modified_date: Date.now(),
+    }),
+]
+*/
+
+const users = [
+    new User({
+        email: "coordinator6@coordinator.com",
+        password: "123456",
+        username: "Coordinator 6",
+        role: "600fbbf2ad2e6e119cd5edf9",
+        created_date: Date.now(),
+        last_modified_date: Date.now(),
+    }),
+    new User({
+        email: "admin4@admin.com",
+        password: "123456",
+        username: "Admin 4",
+        role: "600fbbf2ad2e6e119cd5edfb",
         created_date: Date.now(),
         last_modified_date: Date.now(),
     }),

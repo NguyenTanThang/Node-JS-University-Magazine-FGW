@@ -7,6 +7,9 @@ const {
     getCommentByContributionID,
     addComment
 } = require("../controllers/commentController");
+const {
+    authenticateToken
+} = require("../config/auth");
 
 router.get('/', getAllComments);
 
@@ -16,6 +19,6 @@ router.get('/userID/:userID', getCommentByUserID);
 
 router.get('/contributionID/:contributionID', getCommentByContributionID);
 
-router.post('/add', addComment);
+router.post('/add', authenticateToken, addComment);
 
 module.exports = router;

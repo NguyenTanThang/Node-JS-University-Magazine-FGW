@@ -9,6 +9,10 @@ const {
     editFacultyAssigment,
     deleteFacultyAssigment
 } = require("../controllers/facultyAssignmentController");
+const {
+    authenticateToken,
+    allowAdmin
+} = require("../config/auth");
 
 router.get('/', getAllFacultyAssigments);
 
@@ -18,10 +22,10 @@ router.get('/userID/:userID', getFacultyAssigmentByUserID);
 
 router.get('/facultyID/:facultyID', getFacultyAssigmentByFacultyID);
 
-router.post('/add', addFacultyAssigment);
+router.post('/add', authenticateToken, allowAdmin, addFacultyAssigment);
 
-router.put('/edit/:facultyAssignmentID', editFacultyAssigment);
+router.put('/edit/:facultyAssignmentID', authenticateToken, allowAdmin, editFacultyAssigment);
 
-router.delete('/delete/:facultyAssignmentID', deleteFacultyAssigment);
+router.delete('/delete/:facultyAssignmentID', authenticateToken, allowAdmin, deleteFacultyAssigment);
 
 module.exports = router;

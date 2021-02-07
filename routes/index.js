@@ -230,21 +230,21 @@ const contributionRoute = {
     route: "/contributions/facultyID/${facultyID}",
     requestType: "GET"
   },
-  ADD_FACULTY_ASSIGNMENT: {
+  ADD_CONTRIBUTION: {
     route: "/contributions/add",
     body: [
       "title", "docFileURL", "imageFileURL", "contributor", "faculty", "term"
     ],
     requestType: "POST",
   },
-  EDIT_FACULTY_ASSIGNMENT: {
+  EDIT_CONTRIBUTION: {
     route: "/contributions/edit/${contributionID}",
     body: [
       "any"
     ],
     requestType: "PUT"
   },
-  DELETE_FACULTY_ASSIGNMENT: {
+  DELETE_CONTRIBUTION: {
     route: "/contributions/delete/${contributionID}",
     requestType: "DELETE"
   }

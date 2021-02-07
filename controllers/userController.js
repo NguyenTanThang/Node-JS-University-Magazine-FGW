@@ -13,6 +13,9 @@ const {
 const {
     removeAllFacultyAssignmentByUserID
 } = require("../requests/facultyAssignmentRequests");
+const {
+    generateAccessToken
+} = require("../config/auth");
 
 const getAllUsers = async (req, res) => {
     try {
@@ -186,11 +189,17 @@ const login = async (req, res) => {
         }
 
         const user = existedUser;
+        const token = generateAccessToken({
+            ...user._doc
+        });
 
         return res.json({
             status: 200,
             success: true,
-            data: user,
+            data: {
+                ...user._doc,
+                token
+            },
             message: `Successfully logged in`
         })
     } catch (error) {

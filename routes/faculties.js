@@ -7,15 +7,19 @@ const {
     editFaculty,
     deleteFaculty
 } = require("../controllers/facultyController");
+const {
+    authenticateToken,
+    allowAdmin
+} = require("../config/auth");
 
 router.get('/', getAllFaculties);
 
 router.get('/:facultyID', getFacultyByID);
 
-router.post('/add', addFaculty);
+router.post('/add', authenticateToken, allowAdmin, addFaculty);
 
-router.put('/edit/:facultyID', editFaculty);
+router.put('/edit/:facultyID', authenticateToken, allowAdmin, editFaculty);
 
-router.delete('/delete/:facultyID', deleteFaculty);
+router.delete('/delete/:facultyID', authenticateToken, allowAdmin, deleteFaculty);
 
 module.exports = router;

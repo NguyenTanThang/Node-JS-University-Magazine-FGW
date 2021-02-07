@@ -9,6 +9,9 @@ const {
     editContribution,
     deleteContribution
 } = require("../controllers/contributionController");
+const {
+    authenticateToken
+} = require("../config/auth");
 
 router.get('/', getAllContributions);
 
@@ -18,10 +21,10 @@ router.get('/userID/:userID', getContributionByUserID);
 
 router.get('/facultyID/:facultyID', getContributionByFacultyID);
 
-router.post('/add', addContribution);
+router.post('/add', authenticateToken, addContribution);
 
-router.put('/edit/:contributionID', editContribution);
+router.put('/edit/:contributionID', authenticateToken, editContribution);
 
-router.delete('/delete/:contributionID', deleteContribution);
+router.delete('/delete/:contributionID', authenticateToken, deleteContribution);
 
 module.exports = router;
