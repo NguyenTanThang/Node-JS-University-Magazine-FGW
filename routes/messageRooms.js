@@ -5,7 +5,8 @@ const {
     getMessageRoomByID,
     getMessageRoomByUserID,
     addMessageRoom,
-    getAllMessageRoomsByUserID
+    getAllMessageRoomsByUserID,
+    getMessageRoomBySenderAndReceiver
 } = require("../controllers/messageRoomController");
 
 router.get('/', getAllMessageRooms);
@@ -13,6 +14,8 @@ router.get('/', getAllMessageRooms);
 router.get('/messageRoomID/:messageRoomID', getMessageRoomByID);
 
 router.get('/userID/:userID', getMessageRoomByUserID);
+
+router.get('/sender/:sender/receiver/:receiver', getMessageRoomBySenderAndReceiver);
 
 router.get('/get-all/userID/:userID', getAllMessageRoomsByUserID);
 

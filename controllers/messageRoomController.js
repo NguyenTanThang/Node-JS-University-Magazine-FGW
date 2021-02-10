@@ -25,6 +25,41 @@ const getAllMessageRooms = async (req, res) => {
     }
 }
 
+const getMessageRoomBySenderAndReceiver = async (req, res) => {
+    try {
+        const {receiver, sender} = req.params;
+        let messageRoom = await MessageRoom.findOne({
+            receiver, sender
+        })
+        .populate('receiver')
+        .populate('sender')
+        .exec();
+
+        if (!messageRoom) {
+            return res.json({
+                status: 200,
+                success: false,
+                data: null,
+                message: `Message room does not exist`
+            })
+        }
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: messageRoom,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
 const getAllMessageRoomsByUserID = async (req, res) => {
     try {
         const {userID} = req.params;
@@ -159,5 +194,6 @@ module.exports = {
     getMessageRoomByID,
     getMessageRoomByUserID,
     addMessageRoom,
-    getAllMessageRoomsByUserID
+    getAllMessageRoomsByUserID,
+    getMessageRoomBySenderAndReceiver
 }
