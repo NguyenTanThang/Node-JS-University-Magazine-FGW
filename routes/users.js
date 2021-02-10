@@ -13,7 +13,7 @@ const {
   allowAdmin
 } = require("../config/auth");
 
-router.get('/', authenticateToken, allowAdmin, getAllUsers);
+router.get('/', authenticateToken, getAllUsers);
 //router.get('/', getAllUsers);
 
 router.get('/:userID', authenticateToken, allowAdmin, getUserByID)
