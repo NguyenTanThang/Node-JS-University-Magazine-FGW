@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const FacultyAssignment = require("../models/FacultyAssignment");
 const routeName = `user`;
 const {
     encrypt,
@@ -192,6 +193,23 @@ const login = async (req, res) => {
         const token = generateAccessToken({
             ...user._doc
         });
+        let facultyAssignment;
+
+        if (user.role.role === "Coordinator" || user.role.role === "Student" || user.role.role === "Guest") {
+            facultyAssignment = await FacultyAssignment.findOne({
+                user: user._id
+            })
+            return res.json({
+                status: 200,
+                success: true,
+                data: {
+                    ...user._doc,
+                    token,
+                    facultyAssignment
+                },
+                message: `Successfully logged in`
+            })
+        }
 
         return res.json({
             status: 200,
