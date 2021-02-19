@@ -106,7 +106,7 @@ const addMessage = async (req, res) => {
     try {
         const {author, content, room} = req.body;
 
-        let existedMessageRoom = MessageRoom.findById(room);
+        let existedMessageRoom = await MessageRoom.findById(room);
 
         if (!existedMessageRoom) {
             return res.json({
@@ -122,17 +122,13 @@ const addMessage = async (req, res) => {
             created_date: Date.now(),
             last_modified_date: Date.now()
         }).save();
-        message = await Message.findById(message._id)
-        .populate('author')
-        .populate('room')
-        .exec();
-        let messageRoom = await MessageRoom.findById(message._id)
+        let messageRoom = await MessageRoom.findById(room)
         .populate('sender')
         .populate('receiver')
         .exec();
         let isSender = false;
 
-        if (message.author._id === messageRoom.sender._id) {
+        if (author === messageRoom.sender._id) {
             isSender = true;
         }
 
