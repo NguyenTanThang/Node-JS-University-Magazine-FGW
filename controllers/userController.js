@@ -39,6 +39,43 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+const getAllUsersWithoutAssignments = async (req, res) => {
+    try {
+        let users = await User.find()
+        .populate('role')
+        .exec();
+        let freeUsers = [];
+
+        for (let i = 0; i < users.length; i++) {
+            const user = users[i];
+            const facultyAssignment = await FacultyAssignment.findOne({
+                user: user._id
+            })
+            console.log(!facultyAssignment);
+            if (!facultyAssignment) {
+                freeUsers.push(user);
+            }
+        }
+
+        console.log(freeUsers);
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: freeUsers,
+            count: freeUsers.length
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
 const getUserByID = async (req, res) => {
     try {
         const {userID} = req.params;
@@ -231,11 +268,61 @@ const login = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        const {userID} = req.params;
+        const {oldPassword, newPassword} = req.body;
+
+        const existedUser = await User.findById(userID);
+
+        if (!existedUser) {
+            return res.json({
+                status: 200,
+                success: false,
+                data: null,
+                message: `This ${routeName} does not exist`
+            })
+        }
+
+        if (!compare(oldPassword, existedUser.password)) {
+            return res.json({
+                status: 200,
+                success: false,
+                data: null,
+                message: `Invalid old password`
+            })
+        }
+
+        let password = encrypt(newPassword);
+        let user = await User.findByIdAndUpdate(userID, {password, last_modified_date: Date.now()});
+        user = await User.findById(userID)
+        .populate('role')
+        .exec();
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: user,
+            message: `Successfully updated an ${routeName}`
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500, 
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUserByID,
     addUser,
     editUser,
     deleteUser,
-    login
+    login,
+    getAllUsersWithoutAssignments,
+    changePassword
 }

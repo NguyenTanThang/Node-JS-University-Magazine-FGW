@@ -6,7 +6,9 @@ const {
   addUser,
   editUser,
   deleteUser,
-  login
+  login,
+  getAllUsersWithoutAssignments,
+  changePassword
 } = require("../controllers/userController");
 const {
   authenticateToken,
@@ -16,13 +18,17 @@ const {
 router.get('/', authenticateToken, getAllUsers);
 //router.get('/', getAllUsers);
 
-router.get('/:userID', authenticateToken, allowAdmin, getUserByID)
+router.get('/without-assignment', authenticateToken, getAllUsersWithoutAssignments);
+
+router.get('/userID/:userID', authenticateToken, allowAdmin, getUserByID)
 
 router.post('/add', authenticateToken, allowAdmin, addUser);
 
 router.post('/login', login);
 
 router.put('/edit/:userID', authenticateToken, allowAdmin, editUser);
+
+router.put('/change-password/:userID', authenticateToken, changePassword);
 
 router.delete('/delete/:userID', authenticateToken, allowAdmin, deleteUser);
 
