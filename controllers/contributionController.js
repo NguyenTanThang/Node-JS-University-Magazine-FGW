@@ -5,6 +5,7 @@ const Faculty = require("../models/Faculty");
 const FacultyAssignment = require("../models/FacultyAssignment");
 const Term = require("../models/Term");
 const {sendEmail} = require("../utils/emailSender");
+const {getAllCommentByContributionID} = require("../requests/commentRequests");
 const routeName = `contribution`;
 
 const getAllContributions = async (req, res) => {
@@ -20,6 +21,155 @@ const getAllContributions = async (req, res) => {
             success: true,
             data: contributions,
             count: contributions.length
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
+const getContributionsWithoutCommentReport = async (req, res) => {
+    try {
+        const contributions = await Contribution.find()
+        .populate('contributor')
+        .populate('faculty')
+        .populate('term')
+        .exec();
+        let returnedList = [];
+
+        for (let i = 0; i < contributions.length; i++) {
+            const contribution = contributions[i];
+            const comments = await getAllCommentByContributionID(contribution._id);
+            if (comments.length <= 0) {
+                returnedList.push(contribution);
+            }
+        }
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: returnedList,
+            count: returnedList.length
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
+const getNumberOfContributionsReport = async (req, res) => {
+    try {
+        const terms = await Term.find();
+        const faculties = await Faculty.find();
+        let returnedList = [];
+        let termsList = [];
+        let facultiesList = [];
+
+        for (let i = 0; i < terms.length; i++) {
+            const term = terms[i];
+            for (let j = 0; j < faculties.length; j++) {
+                const faculty = faculties[j];
+                const contributionsInOneTerm = await Contribution.find({
+                    term: term._id
+                })
+                const contributions = await Contribution.find({
+                    term: term._id,
+                    faculty: faculty._id
+                })
+                .populate('contributor')
+                .populate('faculty')
+                .populate('term')
+                .exec();
+                if (contributions.length > 0) {
+                    const percentage = (contributions.length / contributionsInOneTerm.length) * 100;
+                    returnedList.push({
+                        contributions,
+                        count: contributions.length,
+                        percentage,
+                        faculty,
+                        term
+                    })
+                    if (!termsList.includes(term.name)) {
+                        termsList.push(term.name);
+                    }
+                    if (!facultiesList.includes(faculty.name)) {
+                        facultiesList.push(faculty.name);
+                    }
+                }
+            }
+        }
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: {
+                contributions: returnedList,
+                terms: termsList,
+                faculties: facultiesList
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            status: 500,
+            success: false,
+            data: null,
+            message: `Internal Server Error`
+        })
+    }
+}
+
+const getNumberOfContributorsReport = async (req, res) => {
+    try {
+        const terms = await Term.find();
+        let returnedList = [];
+        let termsList = [];
+
+        for (let i = 0; i < terms.length; i++) {
+            const term = terms[i];
+            const contributions = await Contribution.find({
+                term: term._id
+            })
+            .populate('contributor')
+            .populate('faculty')
+            .populate('term')
+            .exec();
+            if (contributions.length > 0) {
+                let contributors = [];
+                for (let j = 0; j < contributions.length; j++) {
+                    const contribution = contributions[j];
+                    if (!contributors.includes(contribution.contributor)) {
+                        contributors.push(contribution.contributor)
+                    }
+                }
+                returnedList.push({
+                    contributors,
+                    contributorCount: contributors.length,
+                    term
+                })
+                if (!termsList.includes(term.name)) {
+                    termsList.push(term.name);
+                }
+            }
+        }
+
+        return res.json({
+            status: 200,
+            success: true,
+            data: {
+                contributions: returnedList,
+                terms: termsList
+            }
         })
     } catch (error) {
         console.log(error);
@@ -680,5 +830,8 @@ module.exports = {
     getContributionByFacultyID,
     addContribution,
     editContribution,
-    deleteContribution
+    deleteContribution,
+    getNumberOfContributionsReport,
+    getNumberOfContributorsReport,
+    getContributionsWithoutCommentReport
 }

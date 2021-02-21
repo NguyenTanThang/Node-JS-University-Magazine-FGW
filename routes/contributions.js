@@ -7,13 +7,22 @@ const {
     getContributionByFacultyID,
     addContribution,
     editContribution,
-    deleteContribution
+    deleteContribution,
+    getNumberOfContributionsReport,
+    getNumberOfContributorsReport,
+    getContributionsWithoutCommentReport
 } = require("../controllers/contributionController");
 const {
     authenticateToken
 } = require("../config/auth");
 
 router.get('/', getAllContributions);
+
+router.get('/number-of-contributions-report', getNumberOfContributionsReport);
+
+router.get('/contributions-without-comment-report', getContributionsWithoutCommentReport);
+
+router.get('/number-of-contributors-report', getNumberOfContributorsReport);
 
 router.get('/contributionID/:contributionID', getContributionByID)
 

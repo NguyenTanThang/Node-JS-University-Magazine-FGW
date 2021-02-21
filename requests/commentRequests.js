@@ -26,7 +26,18 @@ const removeAllCommentByContributionID = async (contributionID) => {
     }
 }
 
+const getAllCommentByContributionID = async (contributionID) => {
+    try {
+        const comments = await Comment.find({contribution: contributionID});
+
+        return comments;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     removeAllCommentByUserID,
-    removeAllCommentByContributionID
+    removeAllCommentByContributionID,
+    getAllCommentByContributionID
 }
