@@ -95,7 +95,7 @@ const getNumberOfContributionsReport = async (req, res) => {
                     returnedList.push({
                         contributions,
                         count: contributions.length,
-                        percentage,
+                        percentage: Math.round(percentage),
                         faculty,
                         term
                     })
