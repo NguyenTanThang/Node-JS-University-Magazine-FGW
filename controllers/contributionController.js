@@ -277,6 +277,24 @@ const addContribution = async (req, res) => {
             })
         }
 
+        const currentTime = new Date().getTime();
+        const closureTime = new Date(existedTerm.closureDate).getTime();
+
+        // To calculate the time difference of two dates 
+        const Difference_In_Time = currentTime - closureTime; 
+            
+        // To calculate the no. of days between two dates 
+        const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
+
+        if (Difference_In_Days >= 14) {
+            return res.json({
+                status: 200,
+                success: false,
+                data: null,
+                message: `This term has reached the closure date for new entries`
+            });
+        }
+
         let contribution = await new Contribution({
             title, docFileURL, imageFileURL, contributor, faculty, term,
             created_date: Date.now(),
@@ -311,7 +329,9 @@ const editContribution = async (req, res) => {
         const {contributionID} = req.params;
         const updatedContribution = req.body;
 
-        const existedContribution = await Contribution.findById(contributionID);
+        const existedContribution = await Contribution.findById(contributionID)
+        .populate("term")
+        .exec();
 
         if (!existedContribution) {
             return res.json({
@@ -320,6 +340,24 @@ const editContribution = async (req, res) => {
                 data: null,
                 message: `This ${routeName} does not exist`
             })
+        }
+
+        const currentTime = new Date().getTime();
+        const closureTime = new Date(existedContribution.term.finalClosureDate).getTime();
+
+        // To calculate the time difference of two dates 
+        const Difference_In_Time = currentTime - closureTime; 
+            
+        // To calculate the no. of days between two dates 
+        const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
+
+        if (Difference_In_Days >= 14) {
+            return res.json({
+                status: 200,
+                success: false,
+                data: null,
+                message: `This term has reached the final closure date for any modification`
+            });
         }
 
         let contribution = await Contribution.findByIdAndUpdate(contributionID, {...updatedContribution, last_modified_date: Date.now()});
