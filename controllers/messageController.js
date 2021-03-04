@@ -140,6 +140,10 @@ const addMessage = async (req, res) => {
             created_date: Date.now(),
             last_modified_date: Date.now()
         }).save();
+        message = await Message.findById(message._id)
+            .populate('author')
+            .populate('room')
+            .exec();
         let messageRoom = await MessageRoom.findById(room)
             .populate('sender')
             .populate('receiver')
