@@ -548,10 +548,10 @@ const sendChatNotificationEmail = (req, messageRoom) => {
                                 <td>
                                     <p>Hi there,</p>
                                     <p>One of your contacts (${isSender ? `
-                                        ${messageRoom.receiver.username} - ${messageRoom.receiver.email}
+                                        ${messageRoom.sender.username} - ${messageRoom.sender.email}
                                     ` : 
                                     `
-                                    ${messageRoom.sender.username} - ${messageRoom.sender.email}
+                                    ${messageRoom.receiver.username} - ${messageRoom.receiver.email}
                                 `}) has sent you a message (${content})</p>
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                                     <tbody>
